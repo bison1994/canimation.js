@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canimation</title>
+</head>
+<style>
+	html, body {
+		height: 100%;
+		overflow: hidden;
+	}
+	* {
+		padding: 0;
+		margin: 0;
+		box-sizing: border-box;
+	}
+</style>
+<body>
+	<canvas id="canvas"></canvas>
+
+	<script src="dist/bundle.js"></script>
+
+	<script>
+		var canvas = document.getElementById('canvas')
+		var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight - 5);
+		var action1 = cnm.createAnimation({
+			circle: {
+				from: [{
+					x: 20,
+					y: 100,
+					r: 10,
+					fill: '#3f5'
+				}],
+				arcTo: [{
+					cx: 700,
+					cy: 300,
+					cR: 300,
+					cr: 200
+				}],
+				duration: 3000
+			},
+			arc: {
+				from: {
+					x: 500,
+					y: 500,
+					r: 200,
+					s: -0.25,
+					e: -0.25,
+					c: false,
+					width: 5,
+					stroke: '#3b3'
+				},
+				to: {
+					e: 0.25
+				},
+				duration: 3000
+			},
+			text: {
+				from: {
+					x: 50,
+					y: 50,
+					text: 0
+				},
+				to: {
+					text: 87
+				},
+				duration: 3000
+			}
+		});
+	</script>
+</body>
+</html>
