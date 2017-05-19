@@ -29,19 +29,24 @@ Canimation.prototype.createAnimation = function (option) {
 			maxDuration = action.duration;
 		}
 
+		// 将终点状态统一到 to 属性上
+		if (action.arcTo) {
+			action.to = action.arcTo;
+			action.arcTo = true;
+		}
+
+		// 将对象包裹为数组形式
 		if (this.util.isObject(action.from)) {
 			action.from = [action.from];
-			if (action.to) {
-				action.to = [action.to];
-			}
-			if (action.arcTo) {
-				action.arcTo = [action.arcTo];
-			}
+		}
+		if (this.util.isObject(action.to)) {
+			action.to = [action.to];
 		}
 
 		// 处理数组中每个对象的属性，将需要改变的属性设为存取器属性
 		for (var i = 0; i < action.from.length; i++) {
 			let from = action.from[i];
+			let to = action.to[i];
 			let dur = action.duration || 1000;
 			let easing = action.easing || 'linear';
 			let obj = {
@@ -50,35 +55,32 @@ Canimation.prototype.createAnimation = function (option) {
 				easing: easing
 			};
 
+			for (var prop in from) {
+				if (!to[prop] || from[prop] === to[prop]) {
+					obj[prop] = from[prop]
+				} else {
+					if (!this.util.isNum(from[prop]) || !this.util.isNum(to[prop])) {
+						throw new Error('the variable param must be number')
+					}
+
+					let b = from[prop];
+					let c = to[prop] - from[prop];
+
+					Object.defineProperty(obj, prop, {
+					  get: function () {
+							return _this.easing[obj.easing](_this.t, b, c, obj.dur)
+					  }
+					});
+				}
+			}
 
 			if (action.arcTo) {
-				let arcTo = action.arcTo[i];
-
-				let rad = 0;
-				let cx = arcTo.cx;
-				let cy = arcTo.cy;
-				let R = arcTo.cR;
-				let r = arcTo.cr;
-				let e = arcTo.e || 2;
-
-				for (var prop in from) {
-					if (!arcTo[prop] || from[prop] === arcTo[prop]) {
-						obj[prop] = from[prop]
-					} else {
-						if (!this.util.isNum(from[prop]) || !this.util.isNum(arcTo[prop])) {
-							throw new Error('the variable param must be number')
-						}
-
-						let b = from[prop];
-						let c = arcTo[prop] - from[prop];
-
-						Object.defineProperty(obj, prop, {
-						  get: function () {
-								return _this.easing[obj.easing](_this.t, b, c, obj.dur)
-						  }
-						});
-					}
-				}
+ 				let cx = to._x;
+				let cy = to._y;
+				let rad = Math.atan((from.y - cy) / (from.x - cx)) / Math.PI;
+				let R = to._R;
+				let r = to._r;
+				let e = to._e || 2;
 
 				Object.defineProperty(obj, 'x', {
 					get: function () {
@@ -93,29 +95,6 @@ Canimation.prototype.createAnimation = function (option) {
 						return cy + r * Math.sin(Math.PI * radian)
 					}
 				})
-			}
-
-			if (action.to) {
-				let to = action.to[i];
-
-				for (var prop in from) {
-					if (!to[prop] || from[prop] === to[prop]) {
-						obj[prop] = from[prop]
-					} else {
-						if (!this.util.isNum(from[prop]) || !this.util.isNum(to[prop])) {
-							throw new Error('the variable param must be number')
-						}
-
-						let b = from[prop];
-						let c = to[prop] - from[prop];
-
-						Object.defineProperty(obj, prop, {
-						  get: function () {
-								return _this.easing[obj.easing](_this.t, b, c, obj.dur)
-						  }
-						});
-					}
-				}
 			}
 
 			// 参数再加工
@@ -314,6 +293,7 @@ Canimation.prototype.processParam = {
 
 		return param
 	},
+
 	arc: function (param) {
 		param.fill = param.fill || 'transparent';
 		param.stroke = param.stroke || '#000';

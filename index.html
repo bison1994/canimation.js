@@ -18,25 +18,25 @@
 <body>
 	<canvas id="canvas"></canvas>
 
-	<script src="dist/bundle.js"></script>
+	<script src="dist/canimation.min.js"></script>
 
 	<script>
 		var canvas = document.getElementById('canvas')
 		var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight - 5);
-		var action1 = cnm.createAnimation({
+		cnm.createAnimation({
 			circle: {
-				from: [{
-					x: 20,
-					y: 100,
-					r: 10,
-					fill: '#3f5'
-				}],
-				arcTo: [{
-					cx: 700,
-					cy: 300,
-					cR: 300,
-					cr: 200
-				}],
+				from: {
+					x: 500,
+					y: 300,
+					r: 15
+				},
+				arcTo: {
+					_x: 500,
+					_y: 500,
+					_R: 200,
+					_r: 200,
+					_e: 1
+				},
 				duration: 3000
 			},
 			arc: {
@@ -47,8 +47,7 @@
 					s: -0.25,
 					e: -0.25,
 					c: false,
-					width: 5,
-					stroke: '#3b3'
+					width: 5
 				},
 				to: {
 					e: 0.25
@@ -57,12 +56,18 @@
 			},
 			text: {
 				from: {
-					x: 50,
-					y: 50,
-					text: 0
+					x: 493,
+					y: 305,
+					text: 0,
+					fill: '#fff'
 				},
-				to: {
-					text: 87
+				arcTo: {
+					text: 87,
+					_x: 493,
+					_y: 505,
+					_R: 200,
+					_r: 200,
+					_e: 1
 				},
 				duration: 3000
 			}
