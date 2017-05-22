@@ -1,4 +1,6 @@
-
+import easing from './src/easing.js'
+import util from './src/util.js'
+import draw from './src/draw.js'
 // to be done
 // 适配
 
@@ -7,6 +9,10 @@ window.Canimation = function (canvas, width, height) {
 	this.h = canvas.height = height + '';
 	this.ctx = canvas.getContext('2d');
 	this.t = 0;
+	this.cacheCanvas = document.createElement('canvas');
+	this.cacheCtx = this.cacheCanvas.getContext('2d');
+	this.cacheCanvas.width = this.w + '';
+	this.cacheCanvas.height = this.h + '';
 }
 
 Canimation.prototype.now = window.performance.now ? 
@@ -16,7 +22,16 @@ Canimation.prototype.now = window.performance.now ?
 		return new Date().getTime();
 	}
 
-Canimation.prototype.createAnimation = function (option) {
+Canimation.prototype.aSin = function (x, y, cx, cy) {
+	var r = Math.pow((y - cy) * (y - cy) + (x - cx) * (x - cx), .5);
+	if (x - cx >= 0) {
+		return (Math.asin((y - cy) / r));
+	} else {
+		return Math.PI - Math.asin((y - cy) / r);
+	}
+}
+
+Canimation.prototype.createAnimation = function (option, loop) {
 	this.iterator = [];
 
 	var maxDuration = 1000;
@@ -77,7 +92,7 @@ Canimation.prototype.createAnimation = function (option) {
 			if (action.arcTo) {
  				let cx = to._x;
 				let cy = to._y;
-				let rad = Math.atan((from.y - cy) / (from.x - cx)) / Math.PI;
+				let rad = from.rad || this.aSin(from.x, from.y, cx, cy) / Math.PI;
 				let R = to._R;
 				let r = to._r;
 				let e = to._e || 2;
@@ -104,47 +119,27 @@ Canimation.prototype.createAnimation = function (option) {
 		}
 	}
 
-	this.animate(maxDuration);
+	loop = loop || false;
+
+	this.animate(maxDuration, loop);
 };
 
-Canimation.prototype.draw = {
-	circle: function (param, ctx) {
-		ctx.beginPath();
-		ctx.arc(param.x, param.y, param.r, 0, Math.PI * 2, true);
-		ctx.fillStyle = param.fill;
-		ctx.fill();
-		ctx.closePath();
-	},
-
-	arc: function (param, ctx) {
-		ctx.beginPath();
-		ctx.arc(param.x, param.y, param.r, Math.PI * 2 * param.s, Math.PI * 2 * param.e, param.c);
-		ctx.fillStyle = param.fill;
-		ctx.strokeStyle = param.stroke;
-		ctx.lineWidth = param.width;
-		ctx.fill();
-		ctx.stroke();
-		ctx.closePath();
-	},
-
-	text: function (param, ctx) {
-		ctx.font = param.font;
-		ctx.fillStyle = param.fill;
-		ctx.fillText(Math.floor(param.text), param.x, param.y)
-	}
-}
-
-Canimation.prototype.animate = function (maxDuration) {
+Canimation.prototype.animate = function (maxDuration, loop) {
 	var start = this.now();
 	var _this = this;
 
 	if (window.requestAnimationFrame) {
 		var animate = function () {
 			if (_this.t > maxDuration) {
-				return;
+				if (loop === true) {
+					start = _this.now();
+					_this.t = 0;
+				} else {
+					return;
+				}
 			}
 
-			loop();
+			render();
 			requestAnimationFrame(animate)
 		}
 
@@ -156,134 +151,26 @@ Canimation.prototype.animate = function (maxDuration) {
 				return;
 			}
 
-			loop();
+			render();
 		}, 19)
 	}
 
-	function loop () {
+	function render () {
 		_this.ctx.clearRect(0, 0, _this.w, _this.h);
+		_this.cacheCtx.clearRect(0, 0, _this.w, _this.h);
 
-		// 绘制图形
+		// 绘制图形到离屏canvas
 		for (var i = 0, len = _this.iterator.length; i < len; i++) {
 			if (_this.t < _this.iterator[i].dur) {
-				_this.draw[_this.iterator[i].name](_this.iterator[i], _this.ctx);
+				_this.draw[_this.iterator[i].name](_this.iterator[i], _this.cacheCtx);
 			}
 		}
 
+		// 绘制到canvas
+		_this.ctx.drawImage(_this.cacheCanvas, 0, 0);
+
 		// 更新时间参数
 		_this.t = _this.now() - start;
-	}
-}
-
-Canimation.prototype.easing = {
-	linear: function (t, b, c, d) {
-		return c * t/d + b;
-	},
-	// 二次曲线
-	easeIn: function (t, b, c, d) {
-		t /= d;
-		return c * t * t + b;
-	},
-	easeOut: function (t, b, c, d) {
-		t /= d;
-		return c * t * (2 - t) + b;
-	},
-	easeInOut: function (t, b, c, d) {
-		t /= d;
-		if ((t *= 2) < 1) {
-			return c * 0.5 * t * t + b;
-		}
-		return - 0.5 * c * (--t * (t - 2) - 1) + b;
-	},
-
-	// 三次曲线
-	cubicIn: function (t, b, c, d) {
-		t /= d;
-		return t * t * t * c + b;
-	},
-	cubicOut: function (t, b, c, d) {
-		t /= d;
-		return (--t * t * t + 1) * c + b;
-	},
-	cubicInOut: function (t, b, c, d) {
-		t /= d;
-		if ((t *= 2) < 1) {
-			return 0.5 * t * t * t * c + b;
-		}
-		return 0.5 * ((t -= 2) * t * t + 2) * c + b;
-	},
-
-	// 四次曲线
-	QuarticIn: function (t, b, c, d) {
-		t /= d
-		return t * t * t * t * c + b;
-	},
-	QuarticOut: function (t, b, c, d) {
-		t /= d
-		return (1 - (--t * t * t * t)) * c + b;
-	},
-	QuarticInOut: function (t, b, c, d) {
-		t /= d
-		if ((t *= 2) < 1) {
-			return 0.5 * t * t * t * t * c + b;
-		}
-		return (- 0.5 * ((t -= 2) * t * t * t - 2)) * c + b;
-	},
-
-	ExponentialIn: function (t, b, c, d) {
-		t /= d
-		return t === 0 ? 0 : Math.pow(1024, t - 1) * c + b;
-	},
-	ExponentialOut: function (t, b, c, d) {
-		t /= d
-		return t === 1 ? c + b : (1 - Math.pow(2, - 10 * t)) * c + b;
-	},
-	ExponentialInOut: function (t, b, c, d) {
-		t /= d
-		if (t === 0) {
-			return 0;
-		}
-		if (t === 1) {
-			return 1;
-		}
-		if ((t *= 2) < 1) {
-			return 0.5 * Math.pow(1024, t - 1) * c + b;
-		}
-		return 0.5 * (- Math.pow(2, - 10 * (t - 1)) + 2) * c + b;
-	},
-
-	CircularIn: function (t, b, c, d) {
-		t /= d
-		return (1 - Math.sqrt(1 - t * t)) * c + b;
-	},
-	CircularOut: function (t, b, c, d) {
-		t /= d
-		return Math.sqrt(1 - (--t * t)) * c + b;
-	},
-	CircularInOut: function (t, b, c, d) {
-		t /= d
-		if ((t *= 2) < 1) {
-			return (- 0.5 * (Math.sqrt(1 - t * t) - 1)) * c + b;
-		}
-		return 0.5 * (Math.sqrt(1 - (t -= 2) * t) + 1) * c + b;
-	}
-}
-
-Canimation.prototype.util = {
-	isFunc: function (obj) {
-		return Object.prototype.toString.call(obj) === '[object Function]';
-	},
-	isArray: function (obj) {
-		return Object.prototype.toString.call(obj) === '[object Array]';
-	},
-	isObject: function (obj) {
-		return Object.prototype.toString.call(obj) === '[object Object]';
-	},
-	isNum: function (num) {
-		return Object.prototype.toString.call(num) === '[object Number]';
-	},
-	isStr: function (str) {
-		return Object.prototype.toString.call(str) === '[object String]';
 	}
 }
 
@@ -309,3 +196,9 @@ Canimation.prototype.processParam = {
 		return param
 	}
 }
+
+Canimation.prototype.draw = draw;
+
+Canimation.prototype.easing = easing;
+
+Canimation.prototype.util = util;
