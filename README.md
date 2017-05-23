@@ -14,7 +14,7 @@ Move a circle straight to the right side
 
 ```
 var canvas = document.getElementById('canvas')
-var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight - 5);
+var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight);
 cnm.createAnimation({
   circle: {
     from: {
