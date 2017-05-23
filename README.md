@@ -16,65 +16,65 @@ Move a circle straight to the right side
 var canvas = document.getElementById('canvas')
 var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight - 5);
 cnm.createAnimation({
-	circle: {
-		from: {
-			x: 200,
-			y: 300,
-			r: 15
-		},
-		to: {
-			x: 500
-		},
-		duration: 3000
-	}
+  circle: {
+    from: {
+      x: 200,
+      y: 300,
+      r: 15
+    },
+    to: {
+      x: 500
+    },
+    duration: 3000
+  }
 });
 ```
 
 Let the circle scale up at the same time
 ```
 cnm.createAnimation({
-	circle: {
-		from: {
-			x: 200,
-			y: 300,
-			r: 15
-		},
-		to: {
-			x: 500,
-			r: 30
-		},
-		duration: 3000
-	}
+  circle: {
+    from: {
+      x: 200,
+      y: 300,
+      r: 15
+    },
+    to: {
+      x: 500,
+      r: 30
+    },
+    duration: 3000
+  }
 });
 ```
 
 Move more than one circle to any space
 ```
 cnm.createAnimation({
-	circle: {
-		from: [{
-			x: 100,
-			y: 100,
-			r: 10
-		}, {
-			x: 200,
-			y: 200,
-			r: 20
-		}, {
-			x: 300,
-			y: 300,
-			r: 30
-		}],
-		to: [{
-			x: 500,
-		}, {
-			y: 500,
-		}, {
-			x: 500,
-			y: 500
-		}],
-		duration: 3000
-	}
+  circle: {
+    from: [{
+      x: 100,
+      y: 100,
+      r: 10
+    }, {
+      x: 200,
+      y: 200,
+      r: 20
+    }, {
+      x: 300,
+      y: 300,
+      r: 30
+    }],
+    to: [{
+      x: 500,
+    }, {
+      y: 500,
+    }, {
+      x: 500,
+      y: 500
+    }],
+    duration: 3000
+  }
 });
 
 ## examples
