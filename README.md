@@ -76,6 +76,7 @@ cnm.createAnimation({
     duration: 3000
   }
 });
+```
 
 ## examples
 
