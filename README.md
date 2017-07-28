@@ -78,7 +78,7 @@ cnm.createAnimation({
 });
 ```
 
-## examples
+## Examples
 
 <a href="https://bison1994.github.io/kidney/canimation/example/example1.html" target="_blank">example1</a>
 <br>

@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>canimation</title>
+  <meta charset="UTF-8">
+  <title>canimation</title>
 </head>
 <style>
-	html, body {
-		height: 100%;
-		overflow: hidden;
-	}
-	* {
-		padding: 0;
-		margin: 0;
-		box-sizing: border-box;
-	}
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
 </style>
 <body>
-	<canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-	<script src="../dist/canimation.min.js"></script>
+  <script src="../dist/canimation.min.js"></script>
 
-	<script>
-		var canvas = document.getElementById('canvas')
-		var w = window.innerWidth;
-		var h = window.innerHeight
-		var cnm = new Canimation(canvas, w, h);
+  <script>
+    var canvas = document.getElementById('canvas')
+    var w = window.innerWidth;
+    var h = window.innerHeight
+    var cnm = new Canimation(canvas, w, h);
 
-		var from = [];
-		var to = [];
-		var r = 0;
-		var len = 5;
+    var from = [];
+    var to = [];
+    var r = 0;
+    var len = 5;
 
-		for (var i = 0; i < 18; i++) {
-			r += 20;
-			len += 5;
-			for (var j = 0; j < len; j++) {
-				var rad = Math.PI * 2 / len * j;
-				from.push({
-					x: w / 2 + r * Math.cos(rad),
-					y: h / 2 + r * Math.sin(rad),
-					r: 5
-				});
-				to.push({
-					_x: w / 2,
-					_y: h / 2,
-					_R: r,
-					_r: r,
-					_e: 2
-				});
-			}
-		}
+    for (var i = 0; i < 18; i++) {
+      r += 20;
+      len += 5;
+      for (var j = 0; j < len; j++) {
+        var rad = Math.PI * 2 / len * j;
+        from.push({
+          x: w / 2 + r * Math.cos(rad),
+          y: h / 2 + r * Math.sin(rad),
+          r: 5
+        });
+        to.push({
+          _x: w / 2,
+          _y: h / 2,
+          _R: r,
+          _r: r,
+          _e: 2
+        });
+      }
+    }
 
-		cnm.createAnimation({
-			circle: {
-				from: from,
-				arcTo: to,
-				duration: 10000
-			}
-		}, true);
-	</script>
+    cnm.createAnimation({
+      circle: {
+        from: from,
+        arcTo: to,
+        duration: 10000
+      }
+    }, true);
+  </script>
 </body>
 </html>

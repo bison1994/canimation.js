@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>canimation</title>
+  <meta charset="UTF-8">
+  <title>canimation</title>
 </head>
 <style>
-	html, body {
-		height: 100%;
-		overflow: hidden;
-	}
-	* {
-		padding: 0;
-		margin: 0;
-		box-sizing: border-box;
-	}
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
 </style>
 <body>
-	<canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-	<script src="../dist/canimation.min.js"></script>
+  <script src="../dist/canimation.min.js"></script>
 
-	<script>
-		var canvas = document.getElementById('canvas')
-		var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight - 5);
-		cnm.createAnimation({
-			circle: {
-				from: {
-					x: 500,
-					y: 300,
-					r: 15
-				},
-				arcTo: {
-					_x: 500,
-					_y: 500,
-					_R: 200,
-					_r: 200,
-					_e: 1
-				},
-				duration: 3000
-			},
-			arc: {
-				from: {
-					x: 500,
-					y: 500,
-					r: 200,
-					s: -0.25,
-					e: -0.25,
-					c: false,
-					width: 5
-				},
-				to: {
-					e: 0.25
-				},
-				duration: 3000
-			},
-			text: {
-				from: {
-					text: 0,
-					x: 493,
-					y: 305,
-					fill: '#fff'
-				},
-				arcTo: {
-					text: 87,
-					_x: 493,
-					_y: 505,
-					_R: 200,
-					_r: 200,
-					_e: 1
-				},
-				duration: 3000
-			}
-		});
-	</script>
+  <script>
+    var canvas = document.getElementById('canvas')
+    var cnm = new Canimation(canvas, window.innerWidth, window.innerHeight - 5);
+    cnm.createAnimation({
+      circle: {
+        from: {
+          x: 500,
+          y: 300,
+          r: 15
+        },
+        arcTo: {
+          _x: 500,
+          _y: 500,
+          _R: 200,
+          _r: 200,
+          _e: 1
+        },
+        duration: 3000
+      },
+      arc: {
+        from: {
+          x: 500,
+          y: 500,
+          r: 200,
+          s: -0.25,
+          e: -0.25,
+          c: false,
+          width: 5
+        },
+        to: {
+          e: 0.25
+        },
+        duration: 3000
+      },
+      text: {
+        from: {
+          text: 0,
+          x: 493,
+          y: 305,
+          fill: '#fff'
+        },
+        arcTo: {
+          text: 87,
+          _x: 493,
+          _y: 505,
+          _R: 200,
+          _r: 200,
+          _e: 1
+        },
+        duration: 3000
+      }
+    });
+  </script>
 </body>
 </html>
